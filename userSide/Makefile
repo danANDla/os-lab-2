@@ -4,5 +4,5 @@ OUTPUT=build
 TARGET=umod
 SRC=src
 
-$(OUTPUT)/$(TARGET): $(SRC)/umodule.o
+$(OUTPUT)/$(TARGET): $(SRC)/umodule.c
 	     $(CC) -o $@ $<

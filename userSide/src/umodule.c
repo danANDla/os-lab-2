@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #define OUTPUT_BUFFER_SIZE 2000
-#define KMODULE "/proc/struct_reader"
+#define KMODULE "/proc/sreader"
 
 int main() {
 
