@@ -5,4 +5,4 @@ TARGET=umod
 SRC=src
 
 $(OUTPUT)/$(TARGET): $(SRC)/umodule.c
-	     $(CC) -o $@ $<
+	     $(CC) -o $@ $< -I/usr/include -I/usr/src/$(uname -r)/include/linux
