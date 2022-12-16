@@ -9,15 +9,18 @@
 
 
 struct user_dentry{
-   unsigned int  d_flags;
+   unsigned int d_flags;
+   unsigned long d_time;
+   unsigned long s_blocksize;
+   unsigned long inode_ino;
 };
 
 void print_dentry(struct user_dentry* direction_entry){
     printf("----DENTRY INFO----\n");
         //printf("d_iname: %s\n", direction_entry->d_iname);
         printf("dflags: %lu\n", direction_entry->d_flags);
-        //printf("d_time: %ul\n", direction_entry->d_time);
-        //printf("superblock: %ul\n", direction_entry->d_sb->s_root->d_iname);
+        printf("d_time: %lu\n", direction_entry->d_time);
+        printf("superblock size: %lu\n", direction_entry->s_blocksize);
     printf("-------------\n"); 
 }
 
@@ -47,14 +50,13 @@ int main(int args, char **argv) {
 
     FILE *r_file;
     r_file = fopen(KMODULE, "r");
-    if(r_file == NULL){
-        printf("can't open file\n");
+    if(r_file == NULL){ printf("can't open file\n");
         return 1;
     }
     char isOk;
     if (fread(&isOk, sizeof(char), 1, r_file) == 0){
-        printf("can't read structure from file\n");
-    } else{
+        printf("unsucced to read data from proc file\n");
+    } else if(isOk == 1){
         printf("file found!\n");
         struct user_dentry den;
         unsigned int str;
@@ -66,6 +68,8 @@ int main(int args, char **argv) {
             print_dentry(&den); 
         }
         fclose(r_file);
+    } else{
+        printf("unsucced to read structure from file\n");
     }
 
 

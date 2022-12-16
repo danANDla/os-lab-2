@@ -56,10 +56,16 @@ static ssize_t _proc_read(struct file *f, char __user *buffer, size_t len, loff_
             struct user_dentry{
                 //unsigned char d_iname[DNAME_INLINE_LEN]
                 unsigned int d_flags;   
+                unsigned long d_time;
+                unsigned long s_blocksize;
+                unsigned long inode_ino;
             };
             struct user_dentry u_dentry;
             u_dentry = (struct user_dentry){
-                .d_flags = direction_entry->d_flags
+                .d_flags = direction_entry->d_flags,
+                .d_time = direction_entry->d_time,
+                .s_blocksize = direction_entry->d_sb->s_blocksize,
+                .inode_ino = direction_entry->d_inode->i_ino
             //    .d_iname = direction_entry->d_iname
             };
             isOk = 1;
