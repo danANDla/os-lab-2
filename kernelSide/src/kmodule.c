@@ -32,27 +32,6 @@ static ssize_t _proc_read(struct file *f, char __user *buffer, size_t len, loff_
 
     if(direction_entry != NULL){
         if(direction_entry->d_inode != NULL){
-            /*
-            msg_len += sprintf(data_rbuffer + msg_len, "----DENTRY INFO----\n");
-            msg_len += sprintf(data_rbuffer + msg_len, "d_iname: %s\n", direction_entry->d_iname);
-            msg_len += sprintf(data_rbuffer + msg_len, "inode number: %lu\n", direction_entry->d_inode->i_ino);
-            msg_len += sprintf(data_rbuffer + msg_len, "inode file size: %lld\n", direction_entry->d_inode->i_size);
-            msg_len += sprintf(data_rbuffer + msg_len, "dflags: %lu\n", direction_entry->d_flags);
-            msg_len += sprintf(data_rbuffer + msg_len, "d_time: %lu\n", direction_entry->d_time);
-            msg_len += sprintf(data_rbuffer + msg_len, "superblock size: %lu\n", direction_entry->d_sb->s_blocksize);
-            msg_len += sprintf(data_rbuffer + msg_len, "-------------\n"); 
-            */
-            /*
-            struct user_dentry{
-                unsigned char * d_iname;
-            };
-            struct user_dentry u_dentry;
-            u_dentry = (struct user_dentry){
-                .d_iname = direction_entry->d_iname
-            };
-            memcpy(data_rbuffer, &u_dentry, sizeof(u_dentry));
-            msg_len += sizeof(u_dentry);
-            */
             struct user_dentry{
                 unsigned char d_iname[DNAME_INLINE_LEN];
                 unsigned int d_flags;   
@@ -98,7 +77,7 @@ static ssize_t _proc_write(struct file *f, const char __user *buffer, size_t len
 
     char data_wbuffer[WBUFFER_SIZE] = {0};
     //memset(data_wbuffer, 0, sizeof(WBUFFER_SIZE));
-    ret = simple_write_to_buffer(data_wbuffer, WBUFFER_SIZE, offset, buffer, len);
+    ret = simple_write_to_buffer(data_wbuffer, writelen, offset, buffer, len);
     if (ret > 0){
         // writelen = max_t(int, writelen, *offset);
         writelen = *offset;
