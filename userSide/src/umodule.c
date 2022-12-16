@@ -9,15 +9,16 @@
 
 
 struct user_dentry{
-   unsigned int d_flags;
-   unsigned long d_time;
-   unsigned long s_blocksize;
-   unsigned long inode_ino;
+    unsigned char d_iname[32];
+    unsigned int d_flags;
+    unsigned long d_time;
+    unsigned long s_blocksize;
+    unsigned long inode_ino;
 };
 
 void print_dentry(struct user_dentry* direction_entry){
     printf("----DENTRY INFO----\n");
-        //printf("d_iname: %s\n", direction_entry->d_iname);
+        printf("d_iname: %s\n", direction_entry->d_iname);
         printf("dflags: %lu\n", direction_entry->d_flags);
         printf("d_time: %lu\n", direction_entry->d_time);
         printf("superblock size: %lu\n", direction_entry->s_blocksize);
@@ -60,13 +61,13 @@ int main(int args, char **argv) {
         printf("file found!\n");
         struct user_dentry den;
         unsigned int str;
-        if (fread(&den, sizeof(struct user_dentry), 1, r_file) == 0){
-            printf("can't read structure from file\n");
-        }
+        char dname_len;
+        if (fread(&dname_len, sizeof(char), 1, r_file) == 0) printf("can't read structure from file\n");
         else{
-            //printf("d_iname: %u\n", str);
-            print_dentry(&den); 
+            if (fread(&den, sizeof(struct user_dentry), 1, r_file) == 0) printf("can't read structure from file\n");
+            else print_dentry(&den); 
         }
+
         fclose(r_file);
     } else{
         printf("unsucced to read structure from file\n");

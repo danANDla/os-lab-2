@@ -54,23 +54,30 @@ static ssize_t _proc_read(struct file *f, char __user *buffer, size_t len, loff_
             msg_len += sizeof(u_dentry);
             */
             struct user_dentry{
-                //unsigned char d_iname[DNAME_INLINE_LEN]
+                unsigned char d_iname[DNAME_INLINE_LEN];
                 unsigned int d_flags;   
                 unsigned long d_time;
                 unsigned long s_blocksize;
                 unsigned long inode_ino;
             };
             struct user_dentry u_dentry;
+            char dname_len;
             u_dentry = (struct user_dentry){
                 .d_flags = direction_entry->d_flags,
                 .d_time = direction_entry->d_time,
                 .s_blocksize = direction_entry->d_sb->s_blocksize,
                 .inode_ino = direction_entry->d_inode->i_ino
-            //    .d_iname = direction_entry->d_iname
             };
+            memcpy(&u_dentry.d_iname, direction_entry->d_iname, sizeof(DNAME_INLINE_LEN));
+
             isOk = 1;
-            memcpy(data_rbuffer, &isOk, sizeof(char));
+            memcpy(data_rbuffer + msg_len, &isOk, sizeof(char));
             msg_len += sizeof(char);
+
+            dname_len = DNAME_INLINE_LEN;
+            memcpy(data_rbuffer + msg_len, &dname_len, sizeof(char));
+            msg_len += sizeof(char);
+
             memcpy(data_rbuffer + msg_len, &u_dentry, sizeof(struct user_dentry));
             msg_len += sizeof(u_dentry);
             pr_info("dentry wrote.");
