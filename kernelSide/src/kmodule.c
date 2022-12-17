@@ -21,24 +21,22 @@ MODULE_VERSION("1.0");
 
 int writelen;
 struct dentry* direction_entry;
+struct user_dentry{
+    unsigned char d_iname[DNAME_INLINE_LEN];
+    unsigned int d_flags;   
+    unsigned long d_time;
+    unsigned long s_blocksize;
+    unsigned long inode_ino;
+};
 
 static ssize_t _proc_read(struct file *f, char __user *buffer, size_t len, loff_t *offset){
     char data_rbuffer[RBUFFER_SIZE] = {0};
     char isOk;
-    isOk = 0;
-
     loff_t msg_len = 0;
-    if (*offset > 0) return 0;
+    isOk = 0;
 
     if(direction_entry != NULL){
         if(direction_entry->d_inode != NULL){
-            struct user_dentry{
-                unsigned char d_iname[DNAME_INLINE_LEN];
-                unsigned int d_flags;   
-                unsigned long d_time;
-                unsigned long s_blocksize;
-                unsigned long inode_ino;
-            };
             struct user_dentry u_dentry;
             char dname_len;
             u_dentry = (struct user_dentry){
@@ -74,16 +72,13 @@ static ssize_t _proc_write(struct file *f, const char __user *buffer, size_t len
     ssize_t ret;
     struct path p;
     int err;
-
     char data_wbuffer[WBUFFER_SIZE] = {0};
-    //memset(data_wbuffer, 0, sizeof(WBUFFER_SIZE));
-    ret = simple_write_to_buffer(data_wbuffer, writelen, offset, buffer, len);
+    ret = simple_write_to_buffer(data_wbuffer, WBUFFER_SIZE, offset, buffer, len);
     if (ret > 0){
-        // writelen = max_t(int, writelen, *offset);
+        //writelen = max_t(int, writelen, *offset);
         writelen = *offset;
         printk(KERN_INFO " writeLen: %d\n", writelen); 
 
-        // err = kern_path("/home/adi/ak", LOOKUP_FOLLOW, &p);
         err = kern_path(data_wbuffer, LOOKUP_FOLLOW, &p);
         if(err != 0) {
             printk(KERN_ALERT "invalid path: %s, err: %d\n", data_wbuffer, err); 
