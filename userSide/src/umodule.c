@@ -35,7 +35,6 @@ int main(int args, char **argv) {
         return 1;
     }
 
-
     sprintf(input, "%s", argv[1]);
 
     const char * end_marker = "-------------\n";
@@ -47,6 +46,7 @@ int main(int args, char **argv) {
         return 1;
     }
     fprintf(w_file, "%s", input);
+    fclose(w_file);
 
 
     FILE *r_file;
@@ -67,31 +67,9 @@ int main(int args, char **argv) {
             if (fread(&den, sizeof(struct user_dentry), 1, r_file) == 0) printf("can't read structure from file\n");
             else print_dentry(&den); 
         }
-
-        fclose(r_file);
     } else{
         printf("unsucced to read structure from file\n");
     }
-
-
-    //struct inode* ind = (struct inode*) malloc(640);
-
-    //r_file = fopen(KMODULE, "r");
-    /*
-    if (fread(&den, sizeof(struct user_dentry), 1, r_file) == 0){
-        printf("can't read structure from file\n");
-    }
-    else{
-    while (fgets(output, 256, r_file) != NULL) {
-        printf("%s", output);
-        if(strcmp(output, end_marker) == 0) break;
-    }
-    */
-    /*
-    fgets(output, 256, r_file);
-    memcpy(ind, output, sizeof(struct user_dentry));
-    print_dentry(ind); 
-    */
-    //fgets(output, 256, r_file);
+    fclose(r_file);
     return 0;
 }
